@@ -1,9 +1,9 @@
 const express = require('express');
-const User = require('../model');
+const User = require('../model/userModel');
 const bcrypt = require('bcryptjs');
 const generateToken = require('../utils');
 const { verify } = require('jsonwebtoken');
-const verifyToken = require('../middleware');  // Since the file is 'index.js' inside 'middleware' folder
+const verifyToken = require('../middleware/authMiddleware');  // Since the file is 'index.js' inside 'middleware' folder
 const nodemailer = require('nodemailer');
 const { text } = require('body-parser');
 
