@@ -1,8 +1,7 @@
 const jwt = require('jsonwebtoken')
-const User = require('../model/userModel'); 
 const Seller = require('../model/sellerSchema')  // Adjust the path if necessary
 
-const verifyToken = (req, res, next) => {
+const VerifySeller = (req, res, next) => {
     const authHeader = req.headers.authorization;
 
     if (!authHeader) {
@@ -16,15 +15,15 @@ const verifyToken = (req, res, next) => {
             return res.status(403).json({ message: "invalid Token" })
         }
 
-        const user = await User.findOne({ _id: decode.id })
+        const Sellers = await Seller.findOne({ _id: decode.id })
 
-        if (!user) {
+        if (!Sellers) {
             return res.status(404).json({ message: "user not found" })
         }
 
-        req.user = user;
+        req.Sellers = Sellers;
         next();
     })
 };
 
-module.exports = verifyToken;
+module.exports = VerifySeller;
