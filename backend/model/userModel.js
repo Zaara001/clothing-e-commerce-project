@@ -5,6 +5,7 @@ const UserSchema = new mongoose.Schema({
     password: { type: String, required: true },
     restPasswordToken: { type: String },
     restPasswordExpires: { type: Date },
+    role: { type: String, default: "customer" } // Default role set to customer
 });
 
 const User = mongoose.model("User", UserSchema);

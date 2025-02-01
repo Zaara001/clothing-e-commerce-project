@@ -12,6 +12,7 @@ const SellerSchema = new mongoose.Schema({
         bankName: { type: String, required: true },
         ifscCode: { type: String, required: true },
     },
+    role: { type: String, default: "seller" } // Default role set to seller
 });
 
 const Seller = mongoose.model("Seller", SellerSchema);
