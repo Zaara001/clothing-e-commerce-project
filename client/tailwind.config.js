@@ -11,8 +11,7 @@ export default {
         baseColor: "#6C7275"
       },
       fontFamily: {
-        aboreto: ['Aboreto', 'cursive'],
-        vit
+        aboreto: ['Aboreto', 'cursive']
       },
     },
   },
