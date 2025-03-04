@@ -7,8 +7,6 @@ const routes= require('./router/authRoutes');
 const sellerRoutes= require('./router/sellerRoutes')
 const productRoutes = require('./router/productRoutes');
  
-
-
 const app = express();
 
 app.use(express.json())
