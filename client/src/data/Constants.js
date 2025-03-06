@@ -1,6 +1,10 @@
+import { Kids, Men, Saree, Women } from '../assets/images';
+
+import{shirt,kurthi1,kurthi2,jean} from '../assets/images';
+
 
 export const categories = {
-    Women: [
+    WOMEN: [
       {
         title: "Topwear",
         items: ["All Topwear", "Tops", "Dresses", "T-shirts", "Jumpsuits"],
@@ -30,7 +34,7 @@ export const categories = {
         items: ["All Women Sportswear", "Sports Bra"],
       },
     ],
-    Men: [
+    MEN: [
       {
         title: "Topwear",
         items: ["All Topwear", "T-shirts", "Shirts", "Winter Wear", "Jackets", "Sweaters & Sweatshirts"],
@@ -56,7 +60,7 @@ export const categories = {
         items: ["All Inner & Sleep Wear", "Boxers", "Underwears"],
       },
     ],
-    Kids: [
+    KIDS: [
       {
         title: "Boys & Girls (2+ Years)",
         items: ["Dresses", "Boys Sets", "Girls Sets", "Ethnicwear", "Nightwear", "Winter Wear", "Top Wear", "Bottomwear"],
@@ -77,8 +81,79 @@ export const categories = {
   };
   
   export const navLinks = [
-    { name: "Home" },
-    { name: "Women", subcategories: categories.Women },
-    { name: "Men", subcategories: categories.Men },
-    { name: "Kids", subcategories: categories.Kids },
+    { name: "HOME" },
+    { name: "WOMEN", subcategories: categories.Women },
+    { name: "MEN", subcategories: categories.Men },
+    { name: "KIDS", subcategories: categories.Kids },
   ];
+
+  export const collectionData = [
+    {
+      title: "WOMEN COLLECTIONS",
+      description: "Go hell for leather or switch it up with suede shoppers, clutches and cross-body bags.",
+      image: Women,
+      size: " h-[280px] w-[500px]",
+      customSize:"w-[120px] h-[305px]" ,
+      reverse: false
+    },
+    {
+      title: "MEN COLLECTIONS",
+      description: "Give strong street-style game with our range of Nike and adidas backpacks.",
+      image: Men,
+      size: " h-[280px] w-[500px]",
+      customSize:"w-[200px] h-[305px]" ,
+      reverse: true
+    },
+    {
+      title: "KIDS COLLECTION",
+      description: "The little things make a big difference with our range of accessories.",
+      image: Kids,
+      size: "h-[280px] w-[500px]",
+      customSize:"w-[190px] h-[300px]" ,
+      reverse: true
+    },
+    {
+      title: "SAREEN COLLECTION",
+      description: "Take your bag hands-free with a cross-body style for instant cool.",
+      image: Saree,
+      size: " h-[280px] w-[500px]",
+      customSize: "w-[195px] h-[305px]" ,
+      reverse: false
+    }
+  ];
+  
+  export const products = [
+    {
+      image: shirt,
+      title: "Women Full Set Office Wear",
+      price: 999,
+      oldPrice: 1500,
+      discount: "33% off",
+    },
+    {
+      image: kurthi1,
+      title: "Women Full Set Office Wear",
+      price: 999,
+      oldPrice: 1500,
+      discount: "33% off",
+    },
+    {
+      image: kurthi2,
+      title: "Women Full Set Office Wear",
+      price: 999,
+      oldPrice: 1500,
+      discount: "33% off",
+    },
+    {
+      image: jean,
+      title: "Women Full Set Office Wear",
+      price: 999,
+      oldPrice: 1500,
+      discount: "33% off",
+    },
+  ];
+
+
+
+
+  

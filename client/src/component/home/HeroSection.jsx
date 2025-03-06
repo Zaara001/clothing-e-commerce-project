@@ -13,21 +13,16 @@ const HeroSection = () => {
   })
 
   return (
-    <section >
+    <section className="relative  h-screen">
       <div>
         <img className="absolute top-0 -z-10 brightness-[0.9] "
           src={HeroSectionImg} alt="" />
         <div className="flex flex-col items-center justify-center h-screen text-white absolute top-0 left-0 right-0 -z-10">
-        <h1 className="font-bold text-5xl whitespace-pre-line text-center ">
+        <h1 className="font-normal text-[43px] whitespace-pre-line text-center font-poppins ">
           {typeEffect}
-          <Cursor cursorColor="white" />
         </h1>
         </div>
       </div>
-
-
-
-
     </section>
   )
 }

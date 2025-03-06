@@ -7,11 +7,14 @@ export default {
   theme: {
     extend: {
       colors: {
-        customBrown: "#C9A38D",
+        customBrown: "#805C47",
         baseColor: "#6C7275"
       },
       fontFamily: {
-        aboreto: ['Aboreto', 'cursive']
+        aboreto: ['Aboreto', 'cursive'],
+        vitenam: [ 'Be Vietnam Pro', 'sans-serif'],
+        istok: ['Istok Web', 'sans-serif'],
+        poppins: ['Poppins', 'sans-serif'],
       },
     },
   },
