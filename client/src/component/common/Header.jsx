@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../../context/AuthContext";
+import { AuthContext } from "../../context/AuthContext"; // Named import
 import { navLinks, categories } from "../../data/Constants";
 import SearchIcon from "@mui/icons-material/Search";
 import Logo from "../../assets/images/Logo.svg";
@@ -9,6 +9,7 @@ import IconButton from "@mui/material/IconButton";
 import Badge, { badgeClasses } from "@mui/material/Badge";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCartOutlined";
 import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
+
 
 const CartBadge = styled(Badge)`
   & .${badgeClasses.badge} {
@@ -25,8 +26,13 @@ const Header = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const navigate = useNavigate();
 
+  // Sync currentUser with user from context
   useEffect(() => {
     setCurrentUser(user);
+  }, [user]);
+
+  useEffect(() => {
+    console.log("Current User:", user);
   }, [user]);
 
   useEffect(() => {
@@ -37,7 +43,7 @@ const Header = () => {
 
   const handleLogout = () => {
     logout();
-    navigate("/login");
+    navigate("/");
   };
 
   return (
@@ -45,12 +51,14 @@ const Header = () => {
       <div className={`fixed top-0 left-0 w-full z-50 ${isScrolled ? "h-10 bg-customBrown shadow-md" : "h-24"}`}>
         <div className="flex items-center justify-between px-4 h-full">
           <img className={`h-16 w-16 ${isScrolled ? "z-[60] mt-5 mr-10" : "none"}`} src={Logo} alt="Logo" />
-          <h1 className={`text-3xl font-semibold font-aboreto ${isScrolled ? "z-[60] text-black mt-5 ml-32" : "text-white"}`}>
+          <h1 className={`text-3xl font-semibold font-aboreto ${isScrolled ? "z-[60] text-black mt-5 ml-32" : "text-white ml-40"}`}>
             A U R O R A
           </h1>
 
           <div className="flex items-center gap-4">
-            <p className="text-sm text-gray-700 cursor-pointer hidden md:block">Become a Seller</p>
+            <p className="text-base font-vitenam pr-3  text-white cursor-pointer hidden md:block"
+             onClick={() => navigate("/seller-login")}
+            >Become a Seller</p>
             <div className={`${isScrolled ? "mt-5 z-[60] ml-3" : "none"}`}>
               <IconButton>
                 <ShoppingCartIcon sx={{ fontSize: "30px", color: isScrolled ? "black" : "white" }} />
@@ -81,7 +89,7 @@ const Header = () => {
                   <ul className="text-gray-700">
                     {currentUser ? (
                       <>
-                        <li className="px-4 py-2 font-semibold">Hello, {currentUser.name || currentUser.email}</li>
+                        <li className="px-4 py-2 font-semibold">Hello, {currentUser.name}</li>
                         <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">Wishlist</li>
                         <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">My Orders</li>
                         <li 

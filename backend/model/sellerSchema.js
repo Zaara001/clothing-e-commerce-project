@@ -1,20 +1,54 @@
 const mongoose = require('mongoose');
 
-const SellerSchema = new mongoose.Schema({
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
-    restPasswordToken: { type: String },
-    restPasswordExpires: { type: Date },
-    businessName: { type: String, required: true },
-    gstNumber: { type: String, required: true },
-    bankDetails: { 
-        accountNumber: { type: String, required: true },
-        bankName: { type: String, required: true },
-        ifscCode: { type: String, required: true },
+const sellerSchema = new mongoose.Schema({
+  googleId: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  name: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  businessName: {
+    type: String,
+    default: '',
+  },
+  gstNumber: {
+    type: String,
+    default: '',
+  },
+  bankDetails: {
+    accountNumber: {
+      type: String,
+      default: '',
     },
-    role: { type: String, default: "seller" } // Default role set to seller
+    bankName: {
+      type: String,
+      default: '',
+    },
+    ifscCode: {
+      type: String,
+      default: '',
+    },
+  },
+  role: {
+    type: String,
+    default: 'seller',
+  },
+  isProfileComplete: {
+    type: Boolean,
+    default: false,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
-const Seller = mongoose.model("Seller", SellerSchema);
-
-module.exports = Seller;
+module.exports = mongoose.model('Seller', sellerSchema);

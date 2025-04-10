@@ -1,11 +1,12 @@
 const express = require('express');
 const Product = require('../model/productModel');
-const VerifySeller = require('../middleware/sellerAuthMiddleware');
-const { upload } = require('../utils/cloudinaryConfig'); // Multer-Cloudinary config
+const { upload } = require('../utils/cloudinaryConfig');
+const verifyToken = require('../middleware/authMiddleware');
+const generateSKU = require('../utils/generateSKU');
 const router = express.Router();
 
-// POST: Create a new product (Pending Approval)
-router.post('/seller/addProduct', VerifySeller, upload.array('images', 5), async (req, res) => {
+// Add Product
+router.post('/seller/addProduct', verifyToken, upload.array('images', 5), async (req, res) => {
     const {
         name,
         description,
@@ -18,15 +19,25 @@ router.post('/seller/addProduct', VerifySeller, upload.array('images', 5), async
         discount,
         shippingCost,
         quantity,
-        sku
+        targetAudience,
+        category
     } = req.body;
 
-    if (!name || !description || !material || !price || !shippingCost || !quantity || !sku) {
+    if (!name || !description || !material || !price || !shippingCost || !quantity || !targetAudience || !category) {
         return res.status(400).json({ message: "Missing required product fields." });
     }
 
     try {
-        const imageUrls = req.files.map(file => file.path); // Store Cloudinary image URLs
+        // 🔄 Generate Unique SKU
+        let sku;
+        let isUnique = false;
+        while (!isUnique) {
+            sku = generateSKU({ targetAudience, category });
+            const existing = await Product.findOne({ sku });
+            if (!existing) isUnique = true;
+        }
+
+        const imageUrls = req.files.map(file => file.path);
 
         const product = new Product({
             name,
@@ -42,7 +53,9 @@ router.post('/seller/addProduct', VerifySeller, upload.array('images', 5), async
             images: imageUrls,
             quantity,
             sku,
-            seller: req.Sellers.id,  // Link product to seller
+            targetAudience,
+            category,
+            seller: req.user._id,
             status: "Pending Approval",
         });
 
@@ -53,23 +66,21 @@ router.post('/seller/addProduct', VerifySeller, upload.array('images', 5), async
     }
 });
 
-// GET: Get all products added by the seller
-router.get('/seller/viewProduct', VerifySeller, async (req, res) => {
+// View All Products
+router.get('/seller/viewProduct', verifyToken, async (req, res) => {
     try {
-        const products = await Product.find({ seller: req.Sellers.id });
+        const products = await Product.find({ seller: req.user._id });
         res.status(200).json(products);
     } catch (err) {
         res.status(500).json({ message: "Error fetching products.", error: err.message });
     }
 });
 
-// GET: Get details of a specific product
-router.get('/seller/productDetails/:name', VerifySeller, async (req, res) => {
+// View Product Details by Name
+router.get('/seller/productDetails/:name', verifyToken, async (req, res) => {
     try {
-        // Use req.params.name to search for the product
         const productName = req.params.name;
-        // Find all products that match the given name for the seller
-        const products = await Product.find({ name: productName, seller: req.Sellers.id });
+        const products = await Product.find({ name: productName, seller: req.user._id });
 
         if (!products || products.length === 0) {
             return res.status(404).json({ message: "Product not found." });
@@ -81,32 +92,26 @@ router.get('/seller/productDetails/:name', VerifySeller, async (req, res) => {
     }
 });
 
-
-// PATCH: Update a product by the seller (Including Image Deletion and Update)
-router.patch('/seller/updateProduct/:name', VerifySeller, upload.array('images', 5), async (req, res) => {
+// Update Product
+router.patch('/seller/updateProduct/:name', verifyToken, upload.array('images', 5), async (req, res) => {
     try {
-        // Find the product by name and seller
-        const product = await Product.findOne({ name: req.params.name, seller: req.Sellers.id });
+        const product = await Product.findOne({ name: req.params.name, seller: req.user._id });
 
         if (!product) {
             return res.status(404).json({ message: "Product not found or you're not authorized." });
         }
 
-        // Ensure images is always an array, even if not updated
         let imageUrls = Array.isArray(product.images) ? [...product.images] : [];
 
-        // Remove the image URL to delete (if provided)
         if (req.body.imageToDelete) {
             imageUrls = imageUrls.filter(image => image !== req.body.imageToDelete);
         }
 
-        // Add new images (if uploaded)
         if (req.files && req.files.length > 0) {
-            const newImageUrls = req.files.map(file => file.path); // New images
-            imageUrls = [...imageUrls, ...newImageUrls]; // Add new images to the existing ones
+            const newImageUrls = req.files.map(file => file.path);
+            imageUrls = [...imageUrls, ...newImageUrls];
         }
 
-        // Update only the provided fields, including images
         const updatedFields = {
             name: req.body.name || product.name,
             description: req.body.description || product.description,
@@ -118,22 +123,72 @@ router.patch('/seller/updateProduct/:name', VerifySeller, upload.array('images',
             price: req.body.price || product.price,
             discount: req.body.discount || product.discount,
             shippingCost: req.body.shippingCost || product.shippingCost,
-            images: imageUrls, // Updated images
+            images: imageUrls,
             quantity: req.body.quantity || product.quantity,
             sku: req.body.sku || product.sku,
+            targetAudience: req.body.targetAudience || product.targetAudience,
+            category: req.body.category || product.category
         };
 
-        // Use findOneAndUpdate for updating the product by name
         const updatedProduct = await Product.findOneAndUpdate(
-            { name: req.params.name, seller: req.Sellers.id }, // query by name and seller
-            updatedFields, 
-            { new: true } // return the updated product
+            { name: req.params.name, seller: req.user._id },
+            updatedFields,
+            { new: true }
         );
 
         res.status(200).json({ message: "Product updated successfully.", updatedProduct });
 
     } catch (err) {
         res.status(500).json({ message: "Error updating product.", error: err.message });
+    }
+});
+
+// View All Approved Products (Public)
+router.get('/all', async (req, res) => {
+    try {
+        const products = await Product.find({ status: "Active" });
+        res.status(200).json(products);
+    } catch (err) {
+        res.status(500).json({ message: "Error fetching products.", error: err.message });
+    }
+});
+
+// View One Public Product
+router.get("/getOne", async (req, res) => {
+    try {
+        const product = await Product.findOne({ status: "Active" });
+        res.status(200).json(product);
+    } catch (err) {
+        res.status(500).json({ message: "Error fetching product.", error: err.message });
+    }
+});
+
+// Get one product by ID (public route)
+router.get("/getOne/:id", async (req, res) => {
+    try {
+      const product = await Product.findById(req.params.id);
+      if (!product || product.status !== "Active") {
+        return res.status(404).json({ message: "Product not found." });
+      }
+      res.status(200).json(product);
+    } catch (err) {
+      res.status(500).json({ message: "Error fetching product.", error: err.message });
+    }
+  });
+
+  // ✅ Get Products by Category (Public Route)
+router.get("/category/:categoryName", async (req, res) => {
+    const { categoryName } = req.params;
+
+    try {
+        const products = await Product.find({
+            category: categoryName,
+            status: "Active", // only show approved/active products
+        });
+
+        res.status(200).json({ products });
+    } catch (err) {
+        res.status(500).json({ message: "Error fetching category products", error: err.message });
     }
 });
 

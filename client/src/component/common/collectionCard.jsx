@@ -4,9 +4,10 @@ const CollectionCard = ({ title, description, image, size , customSize , reverse
       <div className="flex flex-col flex-1 justify-evenly">
         <h2 className="font-bold text-lg">{title}</h2>
         <p className="text-gray-600 text-sm">{description}</p>
-        <button className="mt-3 border-4 border-customBrown pb-1 text-gray-800 hover:text-gray-600 text-xs w-52">
-          S H O P N O W!
-        </button>
+        <button className="relative w-64 py-2 font-bold text-[#805C47]  uppercase border-2 border-[#805C47] transition-all duration-300 hover:text-black hover:border-[#805C47] hover:shadow-[0_0_10px_#805C47]">
+  S H O P N O W!
+</button>
+
       </div>
       <img src={image} alt={title} className={`mr-3 self-center mb-10 ${customSize}`} />
     </div>

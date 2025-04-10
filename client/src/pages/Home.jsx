@@ -14,7 +14,7 @@ const Home = () => {
       <CategorySection />
       <LatestArrivals />
       <Services />
-      <Footer />
+      <Footer className="top-[1500px]" />
     </div>
   )
 }

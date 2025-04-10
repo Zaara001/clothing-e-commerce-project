@@ -1,134 +1,104 @@
-const express = require('express');
-const Seller = require('../model/sellerSchema'); // Updated to use the seller schema
-const bcrypt = require('bcryptjs');
-const generateToken = require('../utils/generateJwt');
-const { verify } = require('jsonwebtoken');
-const verifyToken = require('../middleware/authMiddleware');
-const nodemailer = require('nodemailer');
-const VerifySeller = require('../middleware/sellerAuthMiddleware');
+const express = require("express");
+const passport = require("passport");
+const Seller = require("../model/sellerSchema");
+const { generateAccessToken, generateRefreshToken } = require("../utils/generateJwt");
+const verifyToken = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
-// Seller Sign-Up
-router.post('/seller/signup', async (req, res) => {
-    const { email, password, businessName, gstNumber, bankDetails } = req.body;
+// Google OAuth for Sellers
+router.get(
+  "/auth/google/seller",
+  passport.authenticate("google-seller", {
+    scope: ["profile", "email"],
+    prompt: "select_account consent",
+  })
+);
 
-    // Check if the seller already exists
-    const existingSeller = await Seller.findOne({ email });
-    if (existingSeller) {
-        return res.status(400).json({ message: 'Seller already exists' });
+// Google OAuth Callback for Sellers
+router.get(
+  "/auth/google/callback/seller",
+  passport.authenticate("google-seller", { failureRedirect: "/login", session: false }),
+  async (req, res) => {
+    if (!req.user) {
+      return res.status(401).json({ message: "Authentication failed" });
     }
 
-    // Hash the password before saving
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const { email } = req.user;
 
-    // Create a new seller
-    const newSeller = new Seller({
-        email,
-        password: hashedPassword,
-        businessName,
-        gstNumber,
-        bankDetails: {
-            accountNumber: bankDetails.accountNumber,
-            bankName: bankDetails.bankName,
-            ifscCode: bankDetails.ifscCode
-        }
-    });
+    try {
+      const seller = await Seller.findOne({ email });
 
-    await newSeller.save();
-    res.status(201).json({ message: 'Seller registered successfully' });
-});
+      if (seller && seller.isProfileComplete) {
+        const accessToken = generateAccessToken(seller);
+        const refreshToken = generateRefreshToken(seller);
 
-// Seller Login
-router.post('/seller/login', async (req, res) => {
-    const { email, password } = req.body;
+        res.cookie("accessToken", accessToken, { httpOnly: true, secure: false, sameSite: "Lax" });
+        res.cookie("refreshToken", refreshToken, { httpOnly: true, secure: false, sameSite: "Lax" });
 
-    const seller = await Seller.findOne({ email });
+        res.redirect("http://localhost:5173/seller/dashboard");
+      } else {
+        const accessToken = generateAccessToken(req.user);
+        const refreshToken = generateRefreshToken(req.user);
+
+        res.cookie("accessToken", accessToken, { httpOnly: true, secure: false, sameSite: "Lax" });
+        res.cookie("refreshToken", refreshToken, { httpOnly: true, secure: false, sameSite: "Lax" });
+
+        res.redirect(`http://localhost:5173/seller/register?email=${encodeURIComponent(email)}`);
+      }
+    } catch (error) {
+      console.error("Error in Google callback:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  }
+);
+
+// Seller Registration Endpoint
+router.post("/register", async (req, res) => {
+  const { email, businessName, gstNumber, bankDetails } = req.body;
+
+  try {
+    const seller = await Seller.findOneAndUpdate(
+      { email: { $regex: new RegExp(`^${email}$`, "i") } },
+      { businessName, gstNumber, bankDetails, isProfileComplete: true },
+      { new: true, upsert: true }
+    );
 
     if (!seller) {
-        return res.status(404).json({ message: "Seller not found" });
+      return res.status(404).json({ message: "Seller not found" });
     }
 
-    const isMatch = await bcrypt.compare(password, seller.password);
-
-    if (!isMatch) {
-        return res.status(401).json({ message: "Incorrect password" });
-    }
-
-    const token = generateToken(seller);  // Generate JWT for seller
-    res.json({ token });
+    res.status(200).json({ message: "Seller profile updated successfully", seller });
+  } catch (error) {
+    console.error("Error updating seller profile:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
 });
 
-// Seller protected route (only accessible to logged-in sellers)
-router.get('/seller/data', VerifySeller, async (req, res) => {
-    const seller = await Seller.findById(req.Sellers.id);
-    if (!seller) {
-        return res.status(403).json({ message: 'Seller data not found' });
-    }
-    res.json({ message: `Welcome ${seller.email}, This is seller data.` });
-});
+// Get current seller
+router.get("/me", verifyToken, async (req, res) => {
+  try {
+    console.log("Authenticated user from token:", req.user);
 
-// Reset Password (for Seller)
-router.post('/seller/reset-password', async (req, res) => {
-    const { email } = req.body;
-
-    const seller = await Seller.findOne({ email });
+    const seller = await Seller.findById(req.user._id);
 
     if (!seller) {
-        return res.status(404).json({ message: "Seller not found" });
+      return res.status(404).json({ message: "Seller not found" });
     }
 
-    const token = Math.random().toString(36).slice(-8);
-    seller.restPasswordToken = token;
-    seller.restPasswordExpires = Date.now() + 3600000;
-
-    await seller.save();
-
-    const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-            user: process.env.EMAIL_USER,
-            pass: process.env.EMAIL_PASS
-        },
-    });
-
-    const message = {
-        from: process.env.EMAIL_USER,
-        to: seller.email,
-        subject: "Password reset request",
-        text: `You are receiving this email because you (or someone else) has requested a password reset for your seller account.\n\n Please use the following token to reset your password: ${token}\n\n If you did not request a password reset, please ignore this email.`
-    };
-
-    transporter.sendMail(message, (err, info) => {
-        if (err) {
-            return res.status(404).json({ message: "Something went wrong, please try again!" });
-        }
-        res.status(200).json({ message: "Password reset email sent" + info.response });
-    });
+    res.status(200).json({ seller });
+  } catch (error) {
+    console.error("Error fetching seller:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
 });
 
-// Reset Password (by token, for Seller)
-router.post('/seller/reset-password/:token', async (req, res) => {
-    const { token } = req.params;
-    const { password } = req.body;
-
-    const seller = await Seller.findOne({
-        restPasswordToken: token.trim(),
-        restPasswordExpires: { $gt: Date.now() }
-    });
-
-    if (!seller) {
-        return res.status(404).json({ message: "Invalid token" });
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-    seller.password = hashedPassword;
-    seller.restPasswordToken = null;
-    seller.restPasswordExpires = null;
-
-    await seller.save();
-
-    res.json({ message: "Password reset successfully" });
+// ✅ Logout Route
+router.get("/logout", (req, res) => {
+  res.clearCookie("accessToken", { sameSite: "Lax", httpOnly: true });
+  res.clearCookie("refreshToken", { sameSite: "Lax", httpOnly: true });
+  res.status(200).json({ message: "Logged out successfully" });
 });
+
 
 module.exports = router;

@@ -1,12 +1,10 @@
 import HeroSectionImg from "../../assets/images/HeroSectionImg.png";
 import { useTypewriter, Cursor } from "react-simple-typewriter";
 
-
-
 const HeroSection = () => {
 
   const [typeEffect] = useTypewriter({
-    words: ['Welcome to Aurora\nThe Fashion Begins Here'],
+    words: ['Welcome to Aurora\nThe Fashion Store'],
     loop: {},
     typeSpeed: 100,
     deleteSpeed: 40

@@ -15,6 +15,18 @@ const productSchema = new mongoose.Schema({
     images: [String], // Array of image URLs
     quantity: { type: Number, required: true }, // Quantity available for sale
     sku: { type: String, unique: true, required: true }, // Unique identifier for the product
+
+    // 🆕 Added Fields
+    targetAudience: {
+        type: String,
+        enum: ['Male', 'Women', 'Kids'],
+        required: true,
+    },
+    category: {
+        type: String,
+        required: true,
+    },
+
     status: { 
         type: String, 
         enum: ['Pending Approval', 'Active', 'Inactive'], // Status: Pending, Active, or Inactive

@@ -2,6 +2,29 @@ import { Kids, Men, Saree, Women } from '../assets/images';
 
 import{shirt,kurthi1,kurthi2,jean} from '../assets/images';
 
+import{prom1,prom2,prom3} from '../assets/images';
+
+import blouse from '../assets/images/womenCollectionImage/blouse.jpeg';   
+import Dresses from '../assets/images/womenCollectionImage/Dresses.jpg';  
+import gymTops from '../assets/images/womenCollectionImage/gymTops.jpg'; 
+import jackets from '../assets/images/womenCollectionImage/jackets.jpeg'; 
+import jeans from '../assets/images/womenCollectionImage/jeans.jpg';    
+import jumpSuits from '../assets/images/womenCollectionImage/jumpSuits.jpg'; 
+import kurtas from '../assets/images/womenCollectionImage/kurtas.jpg';    
+import lehenga from '../assets/images/womenCollectionImage/lehenga.jpg';  
+import maternity from '../assets/images/womenCollectionImage/maternity.jpeg'; 
+import nightSuits from '../assets/images/womenCollectionImage/nightSuits.jpg'; 
+import palazzo from '../assets/images/womenCollectionImage/palazzo.jpg';  
+import salwar from '../assets/images/womenCollectionImage/salwar.jpg';    
+import saree from '../assets/images/womenCollectionImage/saree.jpg';      
+import shorts from '../assets/images/womenCollectionImage/shorts.jpg';    
+import skirts from '../assets/images/womenCollectionImage/skirts.jpg';    
+import sportsBra from '../assets/images/womenCollectionImage/sportsBra.jpeg';  
+import sportShort from '../assets/images/womenCollectionImage/sportShort.jpg'; 
+import tshirt from '../assets/images/womenCollectionImage/tshirt.jpg';    
+import yogaPants from '../assets/images/womenCollectionImage/yogaPants.jpg';
+import tops from '../assets/images/womenCollectionImage/tops.jpg';
+
 
 export const categories = {
     WOMEN: [
@@ -18,12 +41,8 @@ export const categories = {
         items: ["Kurtas & Kurtis", "Sarees", "Salwars & Churidars", "Lehengas", "Blouses"],
       },
       {
-        title: "Innerwear",
-        items: ["Bra", "Women Innerwear", "Briefs"],
-      },
-      {
         title: "Sleepwear",
-        items: ["Nightsuits", "Women Nightdress"],
+        items: ["Nightsuits"],
       },
       {
         title: "Maternity Wear",
@@ -44,14 +63,6 @@ export const categories = {
         items: ["All Bottomwear", "Jeans", "Trousers", "Shorts", "Track Pants"],
       },
       {
-        title: "Men Accessories",
-        items: ["All Men Accessories", "Watches", "Belts & Wallets", "Jewellery", "Bags"],
-      },
-      {
-        title: "Men Footwear",
-        items: ["Casual Shoes", "Sports Shoes", "Flip Flops & Sandals", "Formal Shoes", "Loafers"],
-      },
-      {
         title: "Ethnic Wear",
         items: ["Kurtas Sets", "Ethnic Jackets", "Bottomwear"],
       },
@@ -64,18 +75,6 @@ export const categories = {
       {
         title: "Boys & Girls (2+ Years)",
         items: ["Dresses", "Boys Sets", "Girls Sets", "Ethnicwear", "Nightwear", "Winter Wear", "Top Wear", "Bottomwear"],
-      },
-      {
-        title: "Infant (0-2 Years)",
-        items: ["Rompers", "Baby Sets", "Ethnicwear"],
-      },
-      {
-        title: "Toys & Accessories",
-        items: ["Soft Toys", "Footwear", "Stationery", "Watches", "Bags & Backpacks"],
-      },
-      {
-        title: "Baby Care",
-        items: ["Baby Bedding & Accessories", "All Baby Care", "Newborn Care"],
       },
     ],
   };
@@ -154,6 +153,83 @@ export const categories = {
   ];
 
 
+export const WomenCollectionCategories = [
+  { name: "Tops", image: tops },
+  { name: "Dresses", image: Dresses },
+  { name: "T-shirts", image: tshirt },
+  { name: "Jumpsuits", image: jumpSuits },
 
+  // 🟣 Bottomwear
+  { name: "Jeans & Jeggings", image: jeans },
+  { name: "Palazzos", image: palazzo },
+  { name: "Shorts", image: shorts },
+  { name: "Skirts", image: skirts },
 
-  
+  // 🔵 Traditional Wear
+  { name: "Kurtas & Kurtis", image: kurtas },
+  { name: "Sarees", image: saree },
+  { name: "Salwars & Churidars", image: salwar},
+  { name: "Lehengas", image: lehenga },
+  { name: "Blouses", image: blouse },
+
+  // 🟡 Sleepwear
+  { name: "Nightsuits", image: nightSuits },
+
+  // 🔴 Maternity Wear
+  { name: "Maternity Dresses", image: maternity },
+
+  // 🟤 Sports Wear
+  { name: "Sports Bra", image: sportsBra },
+  { name: "Yoga Pants", image: yogaPants },
+  { name: "Gym Tops", image: gymTops },
+  { name: "Activewear Jackets", image: jackets },
+  { name: "Sports Shorts", image: sportShort }
+];
+
+export const images = [prom1, prom2, prom3];
+
+export const categorySlugMap = {
+//women
+  "Tops": "tops",
+  "Dresses": "dresses",
+  "T-shirts": "t-shirts",
+  "Jumpsuits": "jumpsuits",
+  "Jeans & Jeggings": "jeans-jeggings",
+  "Palazzos": "palazzos",
+  "Shorts": "shorts",
+  "Skirts": "skirts",
+  "Kurtas & Kurtis": "kurtas-kurtis",
+  "Sarees": "sarees",
+  "Salwars & Churidars": "salwars-churidars",
+  "Lehengas": "lehengas",
+  "Blouses": "blouses",
+  "Nightsuits": "nightsuits",
+  "Maternity Kurtis & Dresses": "maternity-kurtis-dresses",
+  "Sports Bra": "sports-bra",
+
+  // MEN
+  "T-shirts": "t-shirts-men",
+  "Shirts": "shirts",
+  "Winter Wear": "winter-wear",
+  "Jackets": "jackets",
+  "Sweaters & Sweatshirts": "sweaters-sweatshirts",
+  "Jeans": "jeans",
+  "Trousers": "trousers",
+  "Track Pants": "track-pants",
+  "Kurtas Sets": "kurtas-sets",
+  "Ethnic Jackets": "ethnic-jackets",
+  "Boxers": "boxers",
+  "Underwears": "underwears",
+  //kids
+  "Boys Sets": "boys-sets",
+  "Girls Sets": "girls-sets",
+  "Ethnicwear": "ethnicwear",
+  "Nightwear": "nightwear",
+  "Top Wear": "top-wear-kids",
+  "Bottomwear": "bottomwear-kids",
+  "Winter Wear": "winter-wear-kids",
+};
+
+export const slugToCategoryName = Object.fromEntries(
+  Object.entries(categorySlugMap).map(([name, slug]) => [slug, name])
+);
