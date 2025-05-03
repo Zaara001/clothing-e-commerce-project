@@ -8,6 +8,7 @@
     display: none;
   }
   body {
+    background-color: #f3f4f6;
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
   }

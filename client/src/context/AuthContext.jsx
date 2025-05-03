@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
+import axiosInstance from "../utils/axiosInstance";
 
 export const AuthContext = createContext();
 
@@ -6,61 +7,31 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Fetch authenticated user from backend
   const getUser = async () => {
     try {
-      const response = await fetch("http://localhost:3000/profile", {
-        method: "GET",
-        credentials: "include",  // ✅ Include cookies
-      });
-  
-      if (response.ok) {
-        const data = await response.json();
-        console.log("User data from profile:", data);
-        setUser(data.user);  // ✅ Set user state
-      } else {
-        console.warn("User not authenticated");
-        setUser(null);
-      }
-    } catch (error) {
-      console.error("Error fetching user:", error);
+      const res = await axiosInstance.get("/profile");
+      setUser(res.data.user);
+      return res.data.user;
+    } catch (err) {
       setUser(null);
+      return null;
+    } finally {
+      setLoading(false);
     }
   };
-  
-
-  // Trigger profile fetch after OAuth redirection
-  useEffect(() => {
-    const checkGoogleAuth = () => {
-      const urlParams = new URLSearchParams(window.location.search);
-      if (urlParams.has("code")) {
-        console.log("Detected Google OAuth redirection.");
-        getUser();   // ✅ Fetch the authenticated user
-      } else {
-        setLoading(false);  // ✅ Prevent infinite loading on non-OAuth routes
-      }
-    };
-    checkGoogleAuth();
-  }, []);
 
   const login = async (email, password) => {
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:3000/login", {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
+      await axiosInstance.post("/login", { email, password });
 
-      if (!response.ok) {
-        throw new Error("Login failed");
-      }
+      const userData = await getUser();
+      if (!userData) throw new Error("User data not available");
 
-      const data = await response.json();
-      setUser(data.user);
+      return userData;
     } catch (error) {
-      console.error("Login Error:", error);
+      setUser(null);
+      throw error;
     } finally {
       setLoading(false);
     }
@@ -69,26 +40,21 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     try {
       setLoading(true);
-      await fetch("http://localhost:3000/logout", {
-        method: "GET",
-        credentials: "include",
-      });
-
+      await axiosInstance.get("/logout");
       setUser(null);
-    } catch (error) {
-      console.error("Logout Error:", error);
+    } catch (err) {
+      console.error("Logout Error:", err);
     } finally {
       setLoading(false);
     }
   };
 
-  // 🔥 Prevent infinite loading
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  useEffect(() => {
+    getUser();
+  }, []);
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, loading }}>
+    <AuthContext.Provider value={{ user, login, logout, loading, getUser }}>
       {children}
     </AuthContext.Provider>
   );

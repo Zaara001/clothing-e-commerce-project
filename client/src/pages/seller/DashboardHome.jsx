@@ -28,19 +28,6 @@ const DashboardHome = () => {
           <SalesCharts />
         </div>
         
-        <div className="bg-white rounded-lg shadow p-4">
-          <h2 className="text-lg font-semibold mb-4">Sales Forecast</h2>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="bg-blue-50 p-4 rounded">
-              <h3 className="text-gray-500">Revenue</h3>
-              <p className="text-2xl font-bold text-green-500">+24.2%</p>
-            </div>
-            <div className="bg-blue-50 p-4 rounded">
-              <h3 className="text-gray-500">Orders</h3>
-              <p className="text-2xl font-bold text-green-500">+32.8%</p>
-            </div>
-          </div>
-        </div>
       </div>
   );
 };

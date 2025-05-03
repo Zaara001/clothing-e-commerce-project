@@ -2,44 +2,77 @@ const mongoose = require('mongoose');
 
 // Define Product Schema
 const productSchema = new mongoose.Schema({
-    name: { type: String, required: true }, // Product name
-    description: { type: String, required: true }, // Product description
-    material: { type: String, required: true }, // Fabric/material details
-    sizeOptions: [String], // Array of available sizes
-    colorOptions: [String], // Array of available colors
-    careInstructions: { type: String }, // Care instructions
-    brandName: { type: String }, // Brand name, optional
-    price: { type: Number, required: true }, // Product price
-    discount: { type: Number, default: 0 }, // Discount percentage
-    shippingCost: { type: Number, required: true }, // Shipping cost
-    images: [String], // Array of image URLs
-    quantity: { type: Number, required: true }, // Quantity available for sale
-    sku: { type: String, unique: true, required: true }, // Unique identifier for the product
+    name: { type: String, required: true },
+    description: { type: String, required: true },
+    material: { type: String, required: true },
+    sizeOptions: [String],
+    colorOptions: [String],
+    careInstructions: { type: String },
+    brandName: { type: String },
+    originalPrice: { type: Number, required: true },
+    discount: { type: Number, default: 0, min: 0, max: 100 },
+    price: { 
+        type: Number, 
+        required: true,
+        default: function() {
+          return Math.round(this.originalPrice * (1 - (this.discount / 100)))
+        }
+      },
+    shippingCost: { type: Number, required: true },
+    images: [String],
+    quantity: { type: Number, required: true },
+    sku: { type: String, unique: true, required: true },
 
-    // 🆕 Added Fields
+    // 🆕 Newly Added Fields
+    transparency: {
+        type: String,
+        enum: ['Sheer', 'Semi-Sheer', 'Opaque']
+    },
+    occasions: [{ type: String }], // e.g., ['Casual', 'Party', 'Wedding']
+    countryOfOrigin: { type: String },
+    manufactureDetails: { type: String },
+    itemWeight: { type: Number }, // in grams
+    fabricType: { type: String },
+    fitType: {
+        type: String,
+        enum: ['Regular', 'Slim', 'Relaxed', 'Skinny', 'Wide Leg']
+    },
+
     targetAudience: {
         type: String,
-        enum: ['Male', 'Women', 'Kids'],
-        required: true,
-    },
+        enum: ['Women', 'Men', 'Kids'], // Changed 'Male' to 'Men'
+        required: true
+      },
+      
     category: {
         type: String,
-        required: true,
+        required: true
     },
+    status: {
+        type: String,
+        enum: ['Pending Approval', 'Active', 'Out of Stock'],
+        default: 'Pending Approval'
+    },
+    seller: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Seller',
+        required: true
+        },
+}, { timestamps: true });
 
-    status: { 
-        type: String, 
-        enum: ['Pending Approval', 'Active', 'Inactive'], // Status: Pending, Active, or Inactive
-        default: 'Pending Approval' 
-    },
-    seller: { 
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: 'Seller', 
-        required: true // Reference to the seller who owns the product
-    },
-}, { timestamps: true }); // Include timestamps for creation and updates
+// 🔁 Pre-save hook to auto-calculate price
+productSchema.pre('save', function (next) {
+    if (this.isModified('originalPrice') || this.isModified('discount')) {
+        this.price = Math.round(this.originalPrice * (1 - this.discount / 100));
+    }
+    next();
+});
 
-// Create Product model
+// Text index for search
+productSchema.index({
+    name: 'text',
+    category: 'text'
+});
+
 const Product = mongoose.model('Product', productSchema);
-
 module.exports = Product;

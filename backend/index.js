@@ -6,13 +6,20 @@ const session = require('express-session');
 const passport = require('passport');
 const cookieParser = require('cookie-parser'); 
 const cloudinary = require('cloudinary').v2;
+const Razorpay = require('razorpay');
 
 require('./middleware/Passport');
 
 const authRoutes = require('./router/authRoutes');
 const sellerRoutes = require('./router/sellerRoutes');
 const profileRoutes = require('./router/profileRoutes'); 
-const productRoutes = require('./router/productRoutes') // ✅ Import profile routes
+const productRoutes = require('./router/productRoutes');
+const reviewRoutes = require('./router/reviewRoutes') 
+const paymentRoutes =require( './router/paymentRoutes.js');
+const addressRoutes = require('./router/addressRoutes.js');
+const orderRoutes = require('./router/orderRoutes.js');
+
+
 
 const app = express();
 
@@ -39,7 +46,11 @@ app.use(passport.session());
 app.use( authRoutes);        // User authentication routes
 app.use("/seller", sellerRoutes);    // Seller authentication routes
 app.use("/profile", profileRoutes); 
-app.use("/product", productRoutes) // Profile route
+app.use("/api/product", productRoutes);
+app.use("/reviews", reviewRoutes);  
+app.use("/api/payment", paymentRoutes);
+app.use("/api/address", addressRoutes);
+app.use('/api/orders', orderRoutes);
 
 // ✅ Debug: Show loaded routes
 console.log("Loaded Routes:", app._router.stack
@@ -62,6 +73,8 @@ cloudinary.config({
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
+
+
 
 // Start Server
 const PORT = process.env.PORT || 3000;

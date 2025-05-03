@@ -66,33 +66,6 @@ const SellerSidebar = () => {
             <CreditCardIcon className="w-5 h-5 mr-3" />
             Orders
           </NavLink>
-          <NavLink
-            to="/seller/customers"
-            className={({ isActive }) =>
-              `flex items-center px-4 py-3 ${isActive ? 'bg-gray-100 text-black font-semibold' : 'text-gray-700 hover:bg-gray-50'}`
-            }
-          >
-            <UsersIcon className="w-5 h-5 mr-3" />
-            Customers
-          </NavLink>
-          <NavLink
-            to="/seller/marketing"
-            className={({ isActive }) =>
-              `flex items-center px-4 py-3 ${isActive ? 'bg-gray-100 text-black font-semibold' : 'text-gray-700 hover:bg-gray-50'}`
-            }
-          >
-            <MegaphoneIcon className="w-5 h-5 mr-3" />
-            Marketing
-          </NavLink>
-          <NavLink
-            to="/seller/settings"
-            className={({ isActive }) =>
-              `flex items-center px-4 py-3 ${isActive ? 'bg-gray-100 text-black font-semibold' : 'text-gray-700 hover:bg-gray-50'}`
-            }
-          >
-            <Cog6ToothIcon className="w-5 h-5 mr-3" />
-            Settings
-          </NavLink>
         </nav>
       </div>
 

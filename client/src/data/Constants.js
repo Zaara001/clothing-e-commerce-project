@@ -30,11 +30,11 @@ export const categories = {
     WOMEN: [
       {
         title: "Topwear",
-        items: ["All Topwear", "Tops", "Dresses", "T-shirts", "Jumpsuits"],
+        items: [ "Tops", "Dresses", "T Shirts", "Jumpsuits"],
       },
       {
         title: "Bottomwear",
-        items: ["All Bottomwear", "Jeans & Jeggings", "Palazzos", "Shorts", "Skirts"],
+        items: [ "Jeans & Jeggings", "Palazzos", "Shorts", "Skirts"],
       },
       {
         title: "Traditional Wear",
@@ -46,21 +46,21 @@ export const categories = {
       },
       {
         title: "Maternity Wear",
-        items: ["All Maternity & Feedingwear", "Maternity Kurtis & Dresses"],
+        items: ["Maternity & Feedingwear", "Maternity Kurtis & Dresses"],
       },
       {
         title: "Sports Wear",
-        items: ["All Women Sportswear", "Sports Bra"],
+        items: ["Women Sportswear", "Sports Bra"],
       },
     ],
     MEN: [
       {
         title: "Topwear",
-        items: ["All Topwear", "T-shirts", "Shirts", "Winter Wear", "Jackets", "Sweaters & Sweatshirts"],
+        items: [ "T Shirts", "Shirts", "Winter Wear", "Jackets", "Sweaters & Sweatshirts"],
       },
       {
         title: "Bottomwear",
-        items: ["All Bottomwear", "Jeans", "Trousers", "Shorts", "Track Pants"],
+        items: [ "Jeans", "Trousers", "Shorts", "Track Pants"],
       },
       {
         title: "Ethnic Wear",
@@ -68,7 +68,7 @@ export const categories = {
       },
       {
         title: "Inner & Sleep Wear",
-        items: ["All Inner & Sleep Wear", "Boxers", "Underwears"],
+        items: [" Sleep Wear", "Boxers"],
       },
     ],
     KIDS: [
@@ -80,46 +80,59 @@ export const categories = {
   };
   
   export const navLinks = [
-    { name: "HOME" },
-    { name: "WOMEN", subcategories: categories.Women },
-    { name: "MEN", subcategories: categories.Men },
-    { name: "KIDS", subcategories: categories.Kids },
+    { 
+      name: "HOME",
+      path: "/" // Add path for home
+    },
+    { 
+      name: "WOMEN", 
+      subcategories: categories.WOMEN 
+    },
+    { 
+      name: "MEN", 
+      subcategories: categories.MEN 
+    },
+    { 
+      name: "KIDS", 
+      subcategories: categories.KIDS 
+    },
   ];
 
   export const collectionData = [
     {
-      title: "WOMEN COLLECTIONS",
-      description: "Go hell for leather or switch it up with suede shoppers, clutches and cross-body bags.",
+      title: "W O M E N\u00A0\u00A0C O L L E C T I O N S",
+      description: "Elevate your elegance with timeless styles crafted for every woman. Discover the perfect blend of comfort, trend, and confidence.",
       image: Women,
-      size: " h-[280px] w-[500px]",
-      customSize:"w-[120px] h-[305px]" ,
-      reverse: false
+      bgColor : "#FCF0E9",
+      customSize: "w-[165px] h-[400px]",
+      reverse: false,
     },
     {
-      title: "MEN COLLECTIONS",
-      description: "Give strong street-style game with our range of Nike and adidas backpacks.",
-      image: Men,
-      size: " h-[280px] w-[500px]",
-      customSize:"w-[200px] h-[305px]" ,
-      reverse: true
+      title: "M E N\u00A0\u00A0C O L L E C T I O N S",
+      description: "Define your style with bold looks and everyday essentials for men. Step up your wardrobe game with versatile and sharp designs.",
+      image: Men, 
+      bgColor:"#E9E9E9",
+      customSize: "w-[300px] h-[400px]",
+      reverse: true,
     },
     {
-      title: "KIDS COLLECTION",
-      description: "The little things make a big difference with our range of accessories.",
+      title: "K I D S\u00A0\u00A0C O L L E C T I O N",
+      description: "Color their world with fun, comfy, and playful fashion picks. Designed to keep up with every little adventure and big smile.",
       image: Kids,
-      size: "h-[280px] w-[500px]",
-      customSize:"w-[190px] h-[300px]" ,
-      reverse: true
+      bgColor : "#E9E9E9",
+      customSize: "w-[250px] h-[400px]",
+      reverse: true,
     },
     {
-      title: "SAREEN COLLECTION",
-      description: "Take your bag hands-free with a cross-body style for instant cool.",
+      title: "S A R E E\u00A0\u00A0C O L L E C T I O N",
+      description: "Wrap yourself in tradition with our stunning saree collection. Celebrate every moment in rich fabrics and timeless designs.",
       image: Saree,
-      size: " h-[280px] w-[500px]",
-      customSize: "w-[195px] h-[305px]" ,
-      reverse: false
+      bgColor:"#FCF0E9",
+      customSize: "w-[250px] h-[400px]",
+      reverse: false,
     }
   ];
+  
   
   export const products = [
     {
@@ -156,7 +169,7 @@ export const categories = {
 export const WomenCollectionCategories = [
   { name: "Tops", image: tops },
   { name: "Dresses", image: Dresses },
-  { name: "T-shirts", image: tshirt },
+  { name: "T Shirts", image: tshirt },
   { name: "Jumpsuits", image: jumpSuits },
 
   // 🟣 Bottomwear
@@ -188,48 +201,4 @@ export const WomenCollectionCategories = [
 
 export const images = [prom1, prom2, prom3];
 
-export const categorySlugMap = {
-//women
-  "Tops": "tops",
-  "Dresses": "dresses",
-  "T-shirts": "t-shirts",
-  "Jumpsuits": "jumpsuits",
-  "Jeans & Jeggings": "jeans-jeggings",
-  "Palazzos": "palazzos",
-  "Shorts": "shorts",
-  "Skirts": "skirts",
-  "Kurtas & Kurtis": "kurtas-kurtis",
-  "Sarees": "sarees",
-  "Salwars & Churidars": "salwars-churidars",
-  "Lehengas": "lehengas",
-  "Blouses": "blouses",
-  "Nightsuits": "nightsuits",
-  "Maternity Kurtis & Dresses": "maternity-kurtis-dresses",
-  "Sports Bra": "sports-bra",
 
-  // MEN
-  "T-shirts": "t-shirts-men",
-  "Shirts": "shirts",
-  "Winter Wear": "winter-wear",
-  "Jackets": "jackets",
-  "Sweaters & Sweatshirts": "sweaters-sweatshirts",
-  "Jeans": "jeans",
-  "Trousers": "trousers",
-  "Track Pants": "track-pants",
-  "Kurtas Sets": "kurtas-sets",
-  "Ethnic Jackets": "ethnic-jackets",
-  "Boxers": "boxers",
-  "Underwears": "underwears",
-  //kids
-  "Boys Sets": "boys-sets",
-  "Girls Sets": "girls-sets",
-  "Ethnicwear": "ethnicwear",
-  "Nightwear": "nightwear",
-  "Top Wear": "top-wear-kids",
-  "Bottomwear": "bottomwear-kids",
-  "Winter Wear": "winter-wear-kids",
-};
-
-export const slugToCategoryName = Object.fromEntries(
-  Object.entries(categorySlugMap).map(([name, slug]) => [slug, name])
-);

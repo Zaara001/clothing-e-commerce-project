@@ -4,7 +4,7 @@ import { useTypewriter, Cursor } from "react-simple-typewriter";
 const HeroSection = () => {
 
   const [typeEffect] = useTypewriter({
-    words: ['Welcome to Aurora\nThe Fashion Store'],
+    words: ["Wear the Moment\nLove the Look"],
     loop: {},
     typeSpeed: 100,
     deleteSpeed: 40

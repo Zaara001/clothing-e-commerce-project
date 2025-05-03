@@ -8,13 +8,13 @@ import Footer from "../component/common/Footer";
 const Home = () => {
   console.log("Home is rendering...");
   return (
-    <div>
+    <div >
       <Header />
       <HeroSection />
       <CategorySection />
       <LatestArrivals />
       <Services />
-      <Footer className="top-[1500px]" />
+      <Footer />
     </div>
   )
 }

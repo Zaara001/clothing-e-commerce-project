@@ -1,16 +1,25 @@
 import React from "react";
-import { WomenCollectionCategories, categorySlugMap } from "../data/Constants"; // ✅ Import slug map
+import { WomenCollectionCategories } from "../data/Constants";
 import Header from "../component/common/Header";
 import Footer from "../component/common/Footer";
 import bgImage from "../assets/images/headerBackground.png";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom"; // Add this import
 
 const WomenCollection = () => {
+  const navigate = useNavigate(); // Initialize navigate
+
+  // Add this handler function
+  const handleCategoryClick = (categoryName) => {
+    // Convert category name to URL-friendly format
+    const categoryPath = categoryName.toLowerCase().replace(/\s+/g, '-');
+    navigate(`/women/${categoryPath}`);
+  };
+
   return (
     <div>
-      {/* ✅ Header with background image */}
-      <div 
-        className="relative bg-cover bg-center h-[165px]" 
+      {/* Header with background image */}
+      <div
+        className="relative bg-cover bg-center h-[165px]"
         style={{ backgroundImage: `url(${bgImage})` }}
       >
         <Header />
@@ -22,27 +31,24 @@ const WomenCollection = () => {
         </h2>
 
         <div className="flex gap-12 flex-wrap px-32">
-          {WomenCollectionCategories.map((item, index) => {
-            const slug = categorySlugMap[item.name];
-            if (!slug) return null; // Skip items without slugs
-
-            return (
-              <Link to={`/category/${slug}`} key={index}>
-                <div className="border rounded-lg overflow-hidden shadow-lg hover:scale-105 transition-transform duration-300 cursor-pointer">
-                  <img 
-                    src={item.image} 
-                    alt={item.name} 
-                    className="w-52 h-72 object-cover"
-                  />
-                  <div className="p-4 text-center">
-                    <h3 className="text-base font-poppins font-semibold">
-                      {item.name}
-                    </h3>
-                  </div>
-                </div>
-              </Link>
-            );
-          })}
+          {WomenCollectionCategories.map((item, index) => (
+            <div
+              key={index}
+              className="border rounded-lg overflow-hidden shadow-lg hover:scale-105 transition-transform duration-300 cursor-pointer"
+              onClick={() => handleCategoryClick(item.name)} // Add onClick handler
+            >
+              <img
+                src={item.image}
+                alt={item.name}
+                className="w-52 h-72 object-cover"
+              />
+              <div className="p-4 text-center">
+                <h3 className="text-base font-poppins font-semibold">
+                  {item.name}
+                </h3>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 

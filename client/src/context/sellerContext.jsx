@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import axios from "axios";
+import axiosInstance from '../utils/axiosInstance'; // adjust the path if needed
+
 
 const SellerContext = createContext();
 
@@ -12,7 +13,7 @@ export const SellerProvider = ({ children }) => {
   // ✅ Fetch seller info from protected backend route
   const fetchSeller = async () => {
     try {
-      const res = await axios.get("http://localhost:3000/seller/me", {
+      const res = await axiosInstance.get("http://localhost:3000/seller/me", {
         withCredentials: true,
       });
       setSeller(res.data.seller);
@@ -27,7 +28,7 @@ export const SellerProvider = ({ children }) => {
   // ✅ Logout seller (clears seller state + cookie)
   const logoutSeller = async () => {
     try {
-      await axios.post("http://localhost:3000/seller/logout", {}, {
+      await axiosInstance.post("http://localhost:3000/seller/logout", {}, {
         withCredentials: true,
       });
     } catch (err) {

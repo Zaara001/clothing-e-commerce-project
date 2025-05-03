@@ -3,12 +3,12 @@ const dotenv = require("dotenv");
 
 dotenv.config();
 
-// ✅ Generate Access Token (expires in 15 minutes)
+// ✅ Generate Access Token (extend to 1 hour for better UX)
 const generateAccessToken = (user) => {
-  return jwt.sign({ id: user._id, name: user.name }, process.env.JWT_SECRET, { expiresIn: "15m" });
+  return jwt.sign({ id: user._id, name: user.name }, process.env.JWT_SECRET, { expiresIn: "1h" });
 };
 
-// ✅ Generate Refresh Token (expires in 7 days)
+// ✅ Generate Refresh Token (keep 7 days)
 const generateRefreshToken = (user) => {
   return jwt.sign({ id: user._id, name: user.name }, process.env.JWT_REFRESH_SECRET, { expiresIn: "7d" });
 };

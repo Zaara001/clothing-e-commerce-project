@@ -1,27 +1,38 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ProductCard from "../common/ProductCard";
-import { products } from "../../data/Constants"; // Import product data
+import axiosInstance from "../../utils/axiosInstance";
 
 const LatestArrivals = () => {
-  return (
-    <section className="py-10 bg-gray-100 w-[1100px] mx-auto absolute top-[1930px] left-0 right-0">
-      {/* Title */}
-      <div className="text-center mb-8 ">
-        <h2 className="text-xl italic text-gray-600">NEW</h2>
-        <h1 className="text-3xl font-semibold text-customBrown">ARRIVALS</h1>
-      </div>
+  const [latestProducts, setLatestProducts] = useState([]);
 
-      {/* Product Grid */}
-      <div className=" flex flex-row flex-wrap mx-auto  w-[900px] px-6 relative gap-4 justify-center">
-        {products.slice(0, 4).map((product, index) => (
+  useEffect(() => {
+    const fetchLatestProducts = async () => {
+      try {
+        const { data } = await axiosInstance.get("/api/product/latest"); // Adjust if your backend URL is different
+        setLatestProducts(data);
+      } catch (error) {
+        console.error("Failed to fetch latest products:", error);
+      }
+    };
+
+    fetchLatestProducts();
+  }, []);
+
+  return (
+    <div className="relative top--10">
+      <div className="flex flex-col items-center justify-center mb-6">
+       <h2 className="text-xl italic text-gray-600">NEW</h2>
+      <h1 className="text-3xl font-semibold text-customBrown">ARRIVALS</h1>
+      </div>
+    <div className="py-10 bg-[#C9A38D] w-[1190px] mx-auto relative left-0 right-0">
+
+      <div className="flex flex-row flex-wrap mx-auto w-[1100px] py-9 px-6 relative gap-4 justify-center bg-[#FCF0E9]">
+        {latestProducts.map((product, index) => (
           <ProductCard key={index} product={product} />
-        ))}
-          {products.slice(0, 4).map((product, index) => (
-          <ProductCard key={index} product={product} />
-         
         ))}
       </div>
-    </section>
+    </div>
+    </div>
   );
 };
 

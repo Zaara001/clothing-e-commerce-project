@@ -1,31 +1,54 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ProductRow from "./ProductRow";
-
-const dummyProducts = [
-  {
-    id: "#063231",
-    name: "Pink Dress",
-    price: "$100.00",
-    size: "Medium",
-    quantity: 115,
-    date: "21/2/2025 at 11:35 PM",
-    status: "Available",
-    image: "https://via.placeholder.com/40", // Replace with actual image URLs
-  },
-  {
-    id: "#021241",
-    name: "Yellow Dress",
-    price: "$90.00",
-    size: "Medium",
-    quantity: 0,
-    date: "14/2/2025 at 10:00 PM",
-    status: "Out of Stock",
-    image: "https://via.placeholder.com/40",
-  },
-  // Add more dummy data as needed
-];
+import axiosInstance from "../../../utils/axiosInstance";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const ProductTable = () => {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true); 
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
+
+  const fetchSellerProducts = async () => {
+    try {
+      const response = await axiosInstance.get("/api/product/seller/viewProduct", {
+        withCredentials: true,
+      });
+      setProducts(response.data);
+      setLoading(false);
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to fetch products");
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchSellerProducts();
+  }, []);
+
+  const handleEditProduct = (product) => {
+    navigate(`/seller/edit-product/${product._id}`);
+  };
+
+  const handleDeleteProduct = async (productId) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this product?");
+    if (!confirmDelete) return;
+
+    try {
+      await axiosInstance.delete(`/api/product/seller/deleteProduct/${productId}`, {
+        withCredentials: true,
+      });
+      toast.success("Product deleted successfully");
+      fetchSellerProducts(); // Refresh after delete
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to delete product");
+    }
+  };
+
+  if (loading) return <div>Loading products...</div>;
+  if (error) return <div className="text-red-500">{error}</div>;
+
   return (
     <div className="bg-white p-4 rounded shadow overflow-x-auto">
       <table className="w-full text-left">
@@ -42,8 +65,13 @@ const ProductTable = () => {
           </tr>
         </thead>
         <tbody>
-          {dummyProducts.map((product, index) => (
-            <ProductRow key={index} product={product} />
+          {products.map((product) => (
+            <ProductRow
+              key={product._id}
+              product={product}
+              onEdit={handleEditProduct}
+              onDelete={handleDeleteProduct}
+            />
           ))}
         </tbody>
       </table>
